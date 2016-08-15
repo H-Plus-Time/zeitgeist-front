@@ -1,0 +1,14 @@
+{
+  "name": "zeitgeist",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
+}
