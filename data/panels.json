@@ -1,0 +1,4 @@
+[
+  {"href": "/api/foo", "type": "scatter", "title": "foo", "uid": 1},
+  {"href": "/api/bar", "type": "line", "title": "bar", "uid": 2}
+]

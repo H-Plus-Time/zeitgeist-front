@@ -2,6 +2,7 @@
 <link rel="import" href="bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="bower_components/app-layout/app-header-layout/app-header-layout.html">
@@ -9,7 +10,9 @@
 <link rel="import" href="bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" async href="bower_components/iron-selector/iron-selector.html">
 <link rel="import" async href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="zeitgeist-panel.html">
 <script async src="bower_components/Sortable/Sortable.min.js"></script>
+
 <dom-module id="zeitgeist-shell">
   <template>
     <style is="custom-style" include="zeitgeist-shared-styles iron-flex iron-flex-alignment">
@@ -43,8 +46,10 @@
                     <paper-icon-button icon="search"></paper-icon-button>
                 </app-toolbar>
             </app-header>
-            <div id="sortableContainer">
-
+            <div class="horizontal layout flex">
+                <div style="width:100%;background-color:white">
+                    <zeitgeist-panel></zeitgeist-panel>
+                </div>
             </div>
         </app-header-layout>
     </app-drawer-layout>
@@ -53,7 +58,7 @@
     Polymer({
       is: 'zeitgeist-shell',
       attached: function() {
-        // var sortable = Sortable.create(this.sortableContainer);
+        console.log(this);
       }
     });
   </script>

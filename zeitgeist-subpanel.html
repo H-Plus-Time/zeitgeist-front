@@ -1,0 +1,89 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<script src="bower_components/plotly.js/dist/plotly.min.js"></script>
+
+<dom-module id="zeitgeist-subpanel">
+  <template>
+    <style is="custom-style">
+      :host {
+        display: block;
+      }
+    </style>
+          <paper-material elevation="3">
+            <div class="plotlyContainer">
+
+            </div>
+          </paper-material>
+
+
+  </template>
+  <script>
+    Polymer({
+      is: 'zeitgeist-subpanel',
+      properties: {
+        data: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      attached: function() {
+        var trace2 = {
+            x: [1,5,3
+            ],
+            y: [7,2,3
+            ],
+            z: [1,2,6
+            ],
+            mode: 'markers',
+            name: "qwertyt",
+            marker: {
+                color: 'rgb(127, 127, 127)',
+                size: 12,
+                symbol: 'circle',
+                line: {
+                    color: 'rgb(204, 204, 204)',
+                    width: 1
+                },
+                opacity: 0.9
+            },
+            type: 'line'
+        };
+        var data = [trace2];
+        var layout = {
+            title: this.data.title,
+            font: {
+              family: 'Courier New, monospace',
+              size: 18,
+              color: '#7f7f7f'
+            },
+            xaxis: {
+            title: 'x Axis',
+            titlefont: {
+            family: 'Courier New, monospace',
+            size: 18,
+            color: '#7f7f7f'
+            }
+            },
+            yaxis: {
+            title: 'y Axis',
+            titlefont: {
+            family: 'Courier New, monospace',
+            size: 12,
+            color: '#7f7f7f'
+            }
+          },
+          margin: {
+            top: 0,
+            bottom: 0,
+            left:0,
+            right:0
+          },
+  plot_bgcolor: '#c7c7c7'
+        };
+        console.log(this.data.title);
+        Plotly.newPlot(this.$$('.plotlyContainer'), data, layout);
+      }
+    });
+  </script>
+</dom-module>
