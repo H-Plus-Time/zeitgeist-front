@@ -1,23 +1,35 @@
 {
   "name": "zeitgeist",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.html",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "browser-sync": "browser-sync start --server --files 'src/*.html' --reload-delay=300 --reload-debounce=500",
-    "dev": "npm run browser-sync"
+  "description": "Exploration app for the PubMed corpus",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:H-Plus-Time/zeitgeist-front"
   },
-  "author": "",
-  "license": "LGPL-3.0",
-  "dependencies": {
-    "browserify": "^13.1.0",
-    "gulp": "^3.9.1",
-    "gulp-bower": "0.0.13"
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "bugs": {
+    "url": "https://github.com/H-Plus-Time/zeitgeist-front/issues"
   },
+  "engines": {
+    "node": ">=4.0"
+  },
+  "private": true,
   "devDependencies": {
-    "browser-sync": "^2.14.0",
-    "gulp-header": "^1.8.8",
-    "gulp-rename": "^1.2.2"
+    "babel-plugin-array-includes": "^2.0.3",
+    "babel-preset-es2015-script": "^1.1.0",
+    "del": "^2.2.1",
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-if": "^2.0.1",
+    "gulp-uglify": "^2.0.0",
+    "merge-stream": "^1.0.0",
+    "plylog": "^0.4.0",
+    "polymer-build": "^0.4.0"
+  },
+  "dependencies": {
+    "bower": "^1.8.0",
+    "gulp-imagemin": "^3.1.1"
   }
 }
