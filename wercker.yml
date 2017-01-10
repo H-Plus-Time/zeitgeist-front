@@ -1,0 +1,35 @@
+box: justinribeiro/lighthouse
+build:
+  steps:
+    - script:
+        name: install yarn, git
+        code: |
+          apt-get update && apt-get install -y git
+          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+          apt-get update && apt-get install -y yarn
+    - script:
+        name: set yarn cache
+        code: |
+          export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+    - script:
+        name: install dependencies
+        code: |
+          HOME=$YARN_CACHE yarn && yarn global add bower gulp-cli
+    - script:
+        name: bower install
+        code: |
+          bower install --allow-root --config.interactive=false
+    - script:
+        name: gulp
+        code: |
+          gulp
+deploy:
+  steps:
+    - script:
+        name: install surge
+        code: |
+          npm install -g surge
+    - script:
+        name: push to surge domain
+        code: surge build/unbundled hplustime.com --token $SURGE_TOKEN

@@ -18,6 +18,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
@@ -26,13 +29,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         --app-primary-color: #607D8B;
-        --app-secondary-color: black;
+        --app-secondary-color: #fff;
+        --app-accent-color:#fff;
+        --app-tertiary-color: #fff;
 
         display: block;
       }
 
       app-header {
-        color: #fff;
+        color: var(--app-tertiary-color);
         background-color: var(--app-primary-color);
       }
       app-header paper-icon-button {
@@ -42,6 +47,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .drawer-list {
         margin: 0 20px;
       }
+
+      paper-tab[link] a {
+          /* These mixins (from iron-flex-layout) center the link text. */
+          /*@apply(--layout-horizontal);*/
+          /*@apply(--layout-center-center);*/
+          color: inherit;
+          text-decoration: none;
+          padding-left:10px;
+          padding-right:10px;
+          flex: 1 1 auto;
+          height:50% !important;
+        }
 
       .drawer-list a {
         display: block;
@@ -60,8 +77,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         font-weight: bold;
       }
+      div[main-title] {
+        flex:0 !important;
+        margin:auto;
+      }
+      app-header app-toolbar:first-of-type {
+        /*height:100px;*/
+        align-items:flex-start;
+      }
+      app-toolbar paper-tabs {
+        position:absolute;
+        right:0;
+        text-transform:uppercase;
+        --paper-tabs-selection-bar-color: var(--app-accent-color);
+      }
+      iron-pages {
+        height:calc(100% - 128px);
+      }
     </style>
-
+    <iron-media-query query="max-width: 767px" query-matches="{{smallScreen}}"></iron-media-query>
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
@@ -69,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <app-drawer-layout fullbleed>
+    <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
       <app-drawer>
         <app-toolbar>Menu</app-toolbar>
@@ -85,8 +119,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>zeitgeist App</div>
+              <div hidden$="[[!smallScreen]]">
+                <paper-icon-button
+                  icon="menu" drawer-toggle>
+                </paper-icon-button>
+              </div>
+              <div hidden$="[[smallScreen]]">
+                <paper-tabs selected="{{routeData.page}}"
+                  attr-for-selected="name">
+                  <template is="dom-repeat" items="[[menuItems]]">
+                    <paper-tab name="[[item.name]]" link>
+                      <a href="/#/[[item.name]]">[[item.label]]</a>
+                    </paper-tab>
+                  </template>
+                </paper-tabs>
+              </div>
+          </app-toolbar>
+          <app-toolbar>
+            <div main-title>Zeitgeist</div>
           </app-toolbar>
         </app-header>
 
@@ -113,6 +163,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
+        },
+        menuItems: {
+            notify: true,
+            value: _ => {
+                return [
+                    {name: "home", label: "Home"},
+                    {name: "history", label: "History"}
+                ]
+            }
         }
       },
 
