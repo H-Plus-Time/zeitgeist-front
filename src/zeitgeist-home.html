@@ -10,7 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="shared-styles.html">
-
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="popular-search-card.html">
 <dom-module id="zeitgeist-home">
   <template>
     <style include="shared-styles">
@@ -19,13 +20,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         padding: 10px;
       }
+      section {
+        max-width:960px;
+        margin:auto;
+        padding:10px;
+        margin-top:-10px;
+        background:white;
+        text-align:center;
+      }
+      section > div {
+        display:flex;
+        flex-direction:row;
+        flex-wrap:wrap;
+      }
     </style>
-
+    <section>
+    <h1>Introduction</h1>
+    <p>
+      Discover semantic connections within the Medline corpus (stretching back to 1812), determine critical transitions within scientific disciplines, test hypotheses concerning the patterns of intra- and inter-disciplinary collaboration within the sciences.
+    </section>
+    <section>
+      <div>
+      <template is="dom-repeat" items="[[popular_terms]]">
+        <popular-search-card data="[[item]]"></popular-search-card>
+      </template>
+      </div>
+    </section>
   </template>
-
   <script>
     Polymer({
-      is: 'zeitgeist-home'
+      is: 'zeitgeist-home',
+
+      properties: {
+        popular_terms: {
+          type: Array,
+          value: function() {
+            return []
+          }
+        }
+      },
+
+      attached: function() {
+        let innerAsync = async() => {
+          let apiUp = await fetch(`${this.apiUrl}/ping`)
+                            .then(resp => true).catch(err => false);
+          if(apiUp) {
+            this.popular_terms = await fetch(`${this.apiUrl}/search_history`)
+                                        .then(resp => resp.json());
+          } else {
+            this.popular_terms = await fetch('/data/example-terms.json')
+                                        .then(resp => resp.json())
+          }
+        }
+        innerAsync()
+      }
     });
   </script>
 </dom-module>

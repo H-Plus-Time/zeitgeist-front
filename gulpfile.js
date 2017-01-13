@@ -70,7 +70,7 @@ function source() {
       uglifyJS: true
     })))
     .pipe(gulpif('**/*.js', babel()))
-    .pipe(gulpif('**/*.js', uglify()))
+    // .pipe(gulpif('**/*.js', uglify()))
     .pipe(gulpif('**/*.{png,gif,jpg,svg}', images.minify()))
     .pipe(project.rejoin()); // Call rejoin when you're finished
 }
@@ -88,7 +88,7 @@ function dependencies() {
       uglifyJS: true
     })))
     .pipe(gulpif('**/*.js', babel()))
-    .pipe(gulpif('**/*.js', uglify()))
+    // .pipe(gulpif('**/*.js', uglify()))
     .pipe(project.rejoin());
 }
 

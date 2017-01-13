@@ -1,0 +1,157 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/lz-string/libs/lz-string.min.js">
+</script>
+<dom-module id="term-chip">
+    <style>
+        :host {
+            display:flex;
+            flex-direction:row;
+            flex-wrap:wrap; 
+        }
+        p[depth='0'] {
+            /*background:blue;*/
+            /*width:100%;*/
+        }
+        div {
+            display:inherit;
+            flex-flow:inherit;
+            justify-content:center;
+            align-items:center;
+        }
+        p {
+            padding:5px;
+        }
+        .operator {
+            color:black;
+        }
+        .operand-right {
+            color:darkred;
+        }
+        .operand-left {
+            color:green;
+        }
+    </style>
+    <template>
+        <template is="dom-if" if="[[_isObj(data)]]">
+            <template is="dom-repeat" items="[[_toArray(data)]]">
+                <div>
+                    <p>(</p>
+                    <term-chip data="[[item.val.0]]"
+                        depth$="[[_increment(depth)]]"
+                        side="left">
+                    </term-chip>
+                    <p class="operator" depth$="[[depth]]">[[_humanReadable(item.id)]]</p>
+                    <term-chip data="[[item.val.1]]"
+                        depth$="[[_increment(depth)]]"
+                        side="right">
+                    </term-chip>
+                    <p>)</p>
+                </div>
+            </template>
+        </template>
+        <template is="dom-if" if="[[_isSimple(data)]]">
+            <p class$="operand-[[side]]">[[_prettyFormat(data)]]</p>
+        </template>
+    </template>
+    <script>
+        Polymer({
+            is: 'term-chip',
+            properties: {
+                side: {
+                    type: String,
+                    value: function() {
+                        return 'right'
+                    }
+                },
+                depth: {
+                    type: Number,
+                    value: _ => 0
+                }
+            },
+            _increment: function(depth) {
+                return depth + 1;
+            },
+
+            _isSimple: function(data) {
+                return typeof data != "object";
+            },
+            _isObj: function(data) {
+                
+                return (!!data) && (data.constructor === Object);
+            },
+
+            _toArray: function(obj) {
+                console.log(Object.keys(obj).map(function(prop){return {id:prop, val:obj[prop]}}));
+                return Object.keys(obj).map(function(prop){return {id:prop, val:obj[prop]}})
+            },
+
+            _prettyFormat(val) {
+                if(this.side == "right") {
+                    return val.startsWith("_") ? val.slice(1) : val;
+                } else {
+                    return "'" + val + "'";
+                }
+            },
+
+            _humanReadable: function(operator) {
+                var trans_obj =  {
+                    "and": "AND",
+                    "or": "OR",
+                    "==": "equals"
+                }
+                return Object.keys(trans_obj).indexOf(operator) != -1 ? trans_obj[operator] : operator;
+            },
+
+            ready: function() {
+            }
+        })
+    </script>
+</dom-module>
+<dom-module id="popular-search-card">
+    <style>
+        :host {
+            display:flex;
+            max-width:400px;
+        }
+        a {
+            text-decoration: none;
+            display:flex;
+            flex-direction:row;
+            flex-wrap:wrap;
+            text-align:left;
+            padding:5px;
+            margin:2px;
+            color:black;
+            @apply(--shadow-elevation-2dp);
+        }
+        a:hover {
+            @apply(--shadow-elevation-4dp);
+        }
+        .term-chip {
+            font: Roboto, sans-serif;
+            font-weight:600;
+            padding:10px;
+        }
+        .type-string {
+            background:#eee;
+            color:red;
+        }
+        .type-boolean {
+            text-transform: uppercase;
+            color:darkblue;
+        }
+    </style>
+    <template>
+        <a href="[[_computeUrl(data)]]">
+            <term-chip data="[[data]]"></term-chip>
+        </a>
+    </template>
+    <script>
+        Polymer({
+            is: "popular-search-card",
+            _computeUrl: function(data) {
+                return "/#/search/" + LZString.compressToEncodedURIComponent(JSON.stringify(this.data))
+            }
+        })
+    </script>
+</dom-module>

@@ -1,0 +1,10 @@
+[{
+    "and": [
+        { "in": ["foo", "_title"]},
+        {"==": ["baz", "_author_last_name"]}
+    ]
+},{
+    "==": [
+        "UCSD", "_author_affiliation"
+    ]
+}]

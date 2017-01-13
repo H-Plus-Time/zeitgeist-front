@@ -16,10 +16,13 @@
   "private": true,
   "devDependencies": {
     "babel-plugin-array-includes": "^2.0.3",
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
+    "babel-preset-babili": "^0.0.9",
     "babel-preset-es2015-script": "^1.1.0",
     "del": "^2.2.1",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.2",
+    "gulp-babili": "^0.0.0",
     "gulp-clean-css": "^2.0.12",
     "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.1",

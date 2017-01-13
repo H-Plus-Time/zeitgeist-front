@@ -3,8 +3,8 @@
   "shell": "src/zeitgeist-app.html",
   "fragments": [
     "src/zeitgeist-home.html",
-    "src/zeitgeist-view2.html",
-    "src/zeitgeist-view3.html",
+    "src/zeitgeist-settings.html",
+    "src/zeitgeist-search.html",
     "src/zeitgeist-view404.html"
   ],
   "sourceGlobs": [
