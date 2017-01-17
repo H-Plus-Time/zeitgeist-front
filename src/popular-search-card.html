@@ -6,7 +6,7 @@
         :host {
             display:flex;
             flex-direction:row;
-            flex-wrap:wrap; 
+            flex-wrap:wrap;
         }
         p[depth='0'] {
             /*background:blue;*/
@@ -76,16 +76,18 @@
                 return typeof data != "object";
             },
             _isObj: function(data) {
-                
+
                 return (!!data) && (data.constructor === Object);
             },
 
             _toArray: function(obj) {
-                console.log(Object.keys(obj).map(function(prop){return {id:prop, val:obj[prop]}}));
                 return Object.keys(obj).map(function(prop){return {id:prop, val:obj[prop]}})
             },
 
             _prettyFormat(val) {
+                if(typeof val == 'object' || val == undefined) {
+                    return;
+                }
                 if(this.side == "right") {
                     return val.startsWith("_") ? val.slice(1) : val;
                 } else {
@@ -100,9 +102,6 @@
                     "==": "equals"
                 }
                 return Object.keys(trans_obj).indexOf(operator) != -1 ? trans_obj[operator] : operator;
-            },
-
-            ready: function() {
             }
         })
     </script>
@@ -150,7 +149,7 @@
         Polymer({
             is: "popular-search-card",
             _computeUrl: function(data) {
-                return "/#/search/" + LZString.compressToEncodedURIComponent(JSON.stringify(this.data))
+                return `/search/?query=${LZString.compressToEncodedURIComponent(JSON.stringify(this.data))}`
             }
         })
     </script>

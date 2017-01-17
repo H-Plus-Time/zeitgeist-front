@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
@@ -88,18 +89,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-right:10px;
         /*margin:auto;*/
       }
+      div[main-title] a {
+          text-decoration:none;
+          pointer-events:auto !important;
+          color:inherit;
+      }
       app-header app-toolbar:first-of-type {
         /*height:100px;*/
-        align-items:flex-start;
+        /*align-items:flex-start;*/
       }
-      app-toolbar paper-tabs {
-        position:absolute;
-        right:0;
-        text-transform:uppercase;
-        --paper-tabs-selection-bar-color: var(--app-accent-color);
+      app-toolbar div.navContainer {
+          display:flex;
+          flex: 1;
+          justify-content:flex-end;
+          flex-direction:row;
+          align-items:center;
+          text-transform:uppercase;
+      }
+      app-toolbar div.navContainer paper-button {
+          margin-bottom:3.8px;
+          font-size:14px;
       }
       iron-pages {
-        height:calc(100% - 128px);
+          height:100%;
+      }
+      iron-pages * {
+        height:calc(100% - 64px);
       }
       app-toolbar paper-input {
         /*--paper-input-container-color: var(--app-secondary-color);*/
@@ -120,21 +135,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           padding-bottom:0;
           padding:0;
         }
-        
+
       }
 
       app-toolbar {
         padding-top:20px;
       }
       paper-tabs {
-        padding-right:20px;
+          --paper-tabs-selection-bar-color: var(--app-secondary-color);
       }
       .autocomplete-wrapper {
         display:flex;
         width:450px;
-        /*position:absolute;*/
-        /*right:0;*/
-        /*padding-right:5px;*/
       }
       .autocomplete-wrapper paper-input {
         padding-left:10px;
@@ -150,8 +162,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <iron-media-query query="max-width: 767px" query-matches="{{smallScreen}}"></iron-media-query>
     <app-location
-      route="{{route}}"
-      use-hash-as-path></app-location>
+      route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
         pattern="/:page"
@@ -179,7 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   icon="menu" drawer-toggle>
                 </paper-icon-button>
               </div>
-              <div main-title>Zeitgeist</div>
+              <div main-title><a href="/">Zeitgeist</a></div>
               <paper-material class="autocomplete-wrapper">
                 <paper-input id="searchInput" no-label-float aria-label="Search"></paper-input>
                 <paper-icon-button icon="search"></paper-icon-button>
@@ -187,18 +198,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   for="searchInput"
                   source="[[accounts]]"></paper-autocomplete-suggestions>
               </paper-material>
-              <div hidden$="[[smallScreen]]">
-                <paper-tabs selected="{{routeData.page}}"
-                  attr-for-selected="name">
-                  <template is="dom-repeat" items="[[menuItems]]">
-                    <paper-tab name="[[item.name]]" link>
-                      <a href="/#/[[item.name]]">[[item.label]]</a>
-                    </paper-tab>
-                  </template>
-                  <a href="/#/settings">
-                  <paper-icon-button name="settings" icon="settings" link></paper-icon-button>
-                  </a>
-                </paper-tabs>
+              <div class="navContainer">
+                  <div hidden$="[[smallScreen]]">
+                    <paper-tabs selected="{{routeData.page}}"
+                      attr-for-selected="name">
+                      <template is="dom-repeat" items="[[menuItems]]">
+                        <paper-tab name="[[item.name]]" link>
+                          <a href="/[[item.name]]">[[item.label]]</a>
+                        </paper-tab>
+                      </template>
+                      <a href="/settings">
+                      <paper-icon-button name="settings" icon="settings" link></paper-icon-button>
+                      </a>
+                    </paper-tabs>
+                  </div>
+                  <paper-button hidden$="[[auth]]" on-click="authenticate">Sign in</paper-button>
               </div>
           </app-toolbar>
         </app-header>
@@ -210,7 +224,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <zeitgeist-home name="home" api-url="[[apiUrl]]"></zeitgeist-home>
           <zeitgeist-settings name="settings"></zeitgeist-settings>
-          <zeitgeist-search name="search"></zeitgeist-search>
+          <zeitgeist-search name="search" route="[[subroute]]"></zeitgeist-search>
           <zeitgeist-view404 name="view404"></zeitgeist-view404>
         </iron-pages>
       </app-header-layout>
@@ -231,7 +245,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         apiUrl: {
           type: String,
           value: function() {
-            console.log(window.location.protocol + "api." + window.location.host)
             return window.location.protocol + "//api." + window.location.host
           }
         },
@@ -263,7 +276,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _showPage404: function() {
         this.page = 'view404';
       },
-      
+
     });
   </script>
 </dom-module>

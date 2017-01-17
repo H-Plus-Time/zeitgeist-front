@@ -9,29 +9,103 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<!-- <link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html" /> -->
 <link rel="import" href="shared-styles.html">
-
+<link rel="import" href="../bower_components/viva-graph/viva-graph.html" />
+<link rel="import" href="../bower_components/plotly-plot/plotly-plot.html" />
+<link rel="import" href="popular-search-card.html" />
+<link rel="import" href="../bower_components/app-route/app-route.html" />
 <dom-module id="zeitgeist-search">
   <template>
-    <style include="shared-styles">
+    <style include="shared-styles iron-flex iron-flex-alignment">
       :host {
-        display: block;
-
+        display: flex;
+        flex-direction:column;
         padding: 10px;
       }
+      div {
+          align-self:center;
+      }
     </style>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        query-params="{{params}}"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
 
-    <div class="card">
-      <div class="circle">3</div>
-      <h1>View Three</h1>
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam, est id tempor laoreet.Pro saepe pertinax ei, ad pri animal labores suscipiantur.</p>
+    <div>
+        <popular-search-card data="[[query]]"></popular-search-card>
     </div>
+    <div class="horizontal layout justified">
+        <plotly-plot data='[{"x": [1, 2, 3], "y": [4, 11, 23]}]'></plotly-plot>
+        <plotly-plot data='[{"x": [1, 2, 3], "y": [4, 11, 23]}]'></plotly-plot>
+    </div>
+    <div style="display:flex;min-height:300px;width:100%">
+        <viva-graph data="[[data]]"></viva-graph>
+    </div>
+
+
   </template>
 
   <script>
     Polymer({
-      is: 'zeitgeist-search'
+      is: 'zeitgeist-search',
+
+      behaviours: [
+            Polymer.IronResizableBehavior
+      ],
+
+      properties: {
+          data: {
+              type: Object,
+              value: function() {
+                  return {
+                      nodes: [
+                          {id: 1},
+                          {id: 2}
+                      ],
+                      edges: [
+                          {from: 1, to: 2}
+                      ]
+                  }
+              }
+          }
+      },
+
+      listeners: {
+          "iron-resize": "handleResize"
+      },
+
+      observers: [
+          'queryChanged(params.query)'
+      ],
+
+      handleResize() {
+          console.log(this)
+      },
+
+      queryChanged: function(query) {
+          parsed_lz = LZString.decompressFromEncodedURIComponent(query)
+          if(parsed_lz.length == 0) {
+              return
+          }
+          this.query = JSON.parse(parsed_lz)
+      },
+
+      attached: function() {
+          this.async(function() {
+            //   this.notifyResize();
+          }.bind(this), 1);
+      },
+
+      get parent() {
+          if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+            return this.parentNode.host;
+          }
+          return this.parentNode;
+        },
     });
   </script>
 </dom-module>
