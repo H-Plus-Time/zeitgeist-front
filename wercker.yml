@@ -32,4 +32,4 @@ deploy:
           npm install -g surge
     - script:
         name: push to surge domain
-        code: surge build/unbundled zeitgeist.surge.sh --token $SURGE_TOKEN
+        code: surge . zeitgeist.surge.sh --token $SURGE_TOKEN

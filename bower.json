@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "mocha": "^3.1.2"
   }
 }
