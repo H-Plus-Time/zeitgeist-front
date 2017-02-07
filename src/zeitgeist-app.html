@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete-suggestions.html">
 
 
 <dom-module id="zeitgeist-app">
@@ -153,6 +153,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         flex: 1;
       }
 
+      .autocomplete-wrapper paper-autocomplete-suggestions {
+        /*position:absolute;*/
+        /*bottom:-15px;  */
+      }
+
       paper-tabs paper-icon-button {
         color:black;
       }
@@ -166,6 +171,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route
         route="{{route}}"
         pattern="/:page"
+        query-params="{{params}}"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
@@ -191,13 +197,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-icon-button>
               </div>
               <div main-title><a href="/">Zeitgeist</a></div>
-              <paper-material class="autocomplete-wrapper">
-                <paper-input id="searchInput" no-label-float aria-label="Search"></paper-input>
-                <paper-icon-button icon="search"></paper-icon-button>
+              <div style="position:relative;">
+                <paper-material class="autocomplete-wrapper">
+                    <paper-input id="searchInput" value="{{search}}"
+                        no-label-float aria-label="Search"></paper-input>
+                    <paper-icon-button icon="search"></paper-icon-button>
+                </paper-material>
                 <paper-autocomplete-suggestions
-                  for="searchInput"
-                  source="[[accounts]]"></paper-autocomplete-suggestions>
-              </paper-material>
+                    for="searchInput"
+                    on-autocomplete-selected="onSelect"
+                    source="[[suggestions]]">
+                    <template autocomplete-custom-template>
+                        <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
+                            <a href="/[[item.label]]?id=[[item.id]]">[[item.text]]</a>
+                            <paper-ripple></paper-ripple>
+                        </paper-item>
+                    </template>
+                </paper-autocomplete-suggestions>
+              </div>
               <div class="navContainer">
                   <div hidden$="[[smallScreen]]">
                     <paper-tabs selected="{{routeData.page}}"
@@ -217,7 +234,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-toolbar>
         </app-header>
 
-
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
@@ -225,6 +241,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <zeitgeist-home name="home" api-url="[[apiUrl]]"></zeitgeist-home>
           <zeitgeist-settings name="settings"></zeitgeist-settings>
+          <zeitgeist-author name="author" data="[[author_data]]"></zeitgeist-author>
+          <zeitgeist-article name="article" params="[[params]]"></zeitgeist-article>
           <zeitgeist-search name="search" route="[[subroute]]"></zeitgeist-search>
           <zeitgeist-view404 name="view404"></zeitgeist-view404>
         </iron-pages>
@@ -243,12 +261,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_pageChanged'
         },
 
+        search: {
+            type: String,
+            observer: 'searchChanged'
+        },
+
         apiUrl: {
           type: String,
           value: function() {
             return window.location.protocol + "//api." + window.location.host
           }
         },
+
         menuItems: {
             notify: true,
             value: _ => {
@@ -266,6 +290,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _routePageChanged: function(page) {
         this.page = page || 'home';
+      },
+      searchChanged: function(searchVal) {
+          x = this.$$('paper-autocomplete-suggestions');
+          if (searchVal.length != 0) {
+              body = JSON.stringify({search: searchVal})
+              fetch('http://localhost:8000/search_authors', {"method": "POST", body: body})
+              .then(resp => resp.json())
+              .then(authors => {
+                  console.log(authors)
+                  switch(authors[0].label) {
+                      case 'author':
+                        authors.forEach(author => author.text = `${author.sur_name},${author.first_name}`)
+                        break;
+                      case 'article':
+                        authors.forEach(author => author.text = `${author.full_title}`)
+                        break;
+                  }
+                  x.suggestions(authors)
+              })
+          }
+      },
+
+      onSelect: function() {
+        console.log(this.page)
+        this.async(function() {
+            console.log(this.params.id)
+            switch(this.page) {
+                case "author":
+                    body = JSON.stringify({"author_id": 27652136})
+                    fetch('http://localhost:8000/coauthorship_network', {"method": "POST", body: body})
+                    .then(resp => resp.json())
+                    .then(graph => {
+                        console.log(graph);
+                        graph.edges.forEach(edge => {
+                            edge.from = edge.outV;
+                            edge.to = edge.inV;
+                        })
+                        this.author_data = graph;
+                    })
+                    break;
+                case "article":
+                    break;
+            }
+
+        }, 50)
+
       },
 
       _pageChanged: function(page) {
