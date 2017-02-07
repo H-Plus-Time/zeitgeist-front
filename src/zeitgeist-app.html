@@ -241,7 +241,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <zeitgeist-home name="home" api-url="[[apiUrl]]"></zeitgeist-home>
           <zeitgeist-settings name="settings"></zeitgeist-settings>
-          <zeitgeist-author name="author" data="[[author_data]]"></zeitgeist-author>
+          <zeitgeist-author name="author" data="[[author_data]]" params="[[params]]"></zeitgeist-author>
           <zeitgeist-article name="article" params="[[params]]"></zeitgeist-article>
           <zeitgeist-search name="search" route="[[subroute]]"></zeitgeist-search>
           <zeitgeist-view404 name="view404"></zeitgeist-view404>
@@ -318,7 +318,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log(this.params.id)
             switch(this.page) {
                 case "author":
-                    body = JSON.stringify({"author_id": 27652136})
+                    body = JSON.stringify({"author_id": this.params.id})
                     fetch('http://localhost:8000/coauthorship_network', {"method": "POST", body: body})
                     .then(resp => resp.json())
                     .then(graph => {
