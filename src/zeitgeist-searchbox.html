@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+
+<link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete-suggestions.html">
+
+<dom-module id="zeitgeist-searchbox">
+  <template>
+    <style is="custom-style">
+      :host {
+        display: block;
+        position:relative;
+        --paper-tab-ink: #607D8B;
+      }
+      .autocomplete-wrapper {
+        display:flex;
+        width:450px;
+      }
+      .autocomplete-wrapper paper-input {
+        padding-left:10px;
+        flex: 1;
+      }
+
+      .autocomplete-wrapper paper-autocomplete-suggestions {
+        /*position:absolute;*/
+        /*bottom:-15px;  */
+      }
+      .autocomplete-wrapper paper-icon-button {
+        align-self:center;
+      }
+      paper-tabs {
+          height:32px;
+          --paper-tabs-selection-bar-color: var(--app-secondary-color);
+      }
+      .tabContainer {
+          display:flex;
+          justify-content:flex-start;
+          flex-direction:row;
+          text-transform:uppercase;
+      }
+    </style>
+    <paper-material class="autocomplete-wrapper">
+        <paper-input id="searchInput" value="{{search}}"
+        no-label-float aria-label="Search"></paper-input>
+        <paper-icon-button icon="search"></paper-icon-button>
+    </paper-material>
+    <paper-autocomplete-suggestions
+        for="searchInput"
+        on-autocomplete-selected="onSelect"
+        source="[[suggestions]]">
+        <template autocomplete-custom-template>
+            <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]"
+                role="option" aria-selected="false">
+            <a href="/[[item.label]]?id=[[item.id]]">[[item.text]]</a>
+            <paper-ripple></paper-ripple>
+        </paper-item>
+        </template>
+    </paper-autocomplete-suggestions>
+    <div class="tabContainer">
+        <paper-tabs fallback-selection="authors" selected="[[mode]]"
+            attr-for-selected="name">
+            <paper-tab name="authors">Authors</paper-tab>
+            <paper-tab name="keywords">Keywords</paper-tab>
+            <paper-tab disabled name="articles">Articles</paper-tab>
+        </paper-tabs>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'zeitgeist-searchbox',
+
+    });
+  </script>
+</dom-module>

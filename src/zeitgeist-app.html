@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-autocomplete/paper-autocomplete-suggestions.html">
-
+<link rel="import" href="zeitgeist-searchbox.html" />
 
 <dom-module id="zeitgeist-app">
   <template>
@@ -37,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-secondary-color: #000;
         --app-accent-color:#000;
         --app-tertiary-color: #000;
-
+        --paper-tab-ink: #607D8B;
         display: block;
       }
 
@@ -140,30 +140,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       app-toolbar {
         padding-top:20px;
+        align-items:flex-start;
       }
       paper-tabs {
           --paper-tabs-selection-bar-color: var(--app-secondary-color);
       }
-      .autocomplete-wrapper {
-        display:flex;
-        width:450px;
-      }
-      .autocomplete-wrapper paper-input {
-        padding-left:10px;
-        flex: 1;
-      }
 
-      .autocomplete-wrapper paper-autocomplete-suggestions {
-        /*position:absolute;*/
-        /*bottom:-15px;  */
-      }
 
       paper-tabs paper-icon-button {
         color:black;
       }
-      .autocomplete-wrapper paper-icon-button {
-        align-self:center;
-      }
+
     </style>
     <iron-media-query query="max-width: 767px" query-matches="{{smallScreen}}"></iron-media-query>
     <app-location
@@ -190,31 +177,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-header-layout has-scrolling-region>
 
         <app-header condenses reveals effects="waterfall">
-          <app-toolbar>
+          <app-toolbar style="height:80px">
               <div hidden$="[[!smallScreen]]">
                 <paper-icon-button
                   icon="menu" drawer-toggle>
                 </paper-icon-button>
               </div>
               <div main-title><a href="/">Zeitgeist</a></div>
-              <div style="position:relative;">
-                <paper-material class="autocomplete-wrapper">
-                    <paper-input id="searchInput" value="{{search}}"
-                        no-label-float aria-label="Search"></paper-input>
-                    <paper-icon-button icon="search"></paper-icon-button>
-                </paper-material>
-                <paper-autocomplete-suggestions
-                    for="searchInput"
-                    on-autocomplete-selected="onSelect"
-                    source="[[suggestions]]">
-                    <template autocomplete-custom-template>
-                        <paper-item on-tap="_onSelect" id$="[[_getSuggestionId(index)]]" role="option" aria-selected="false">
-                            <a href="/[[item.label]]?id=[[item.id]]">[[item.text]]</a>
-                            <paper-ripple></paper-ripple>
-                        </paper-item>
-                    </template>
-                </paper-autocomplete-suggestions>
-              </div>
+              <zeitgeist-searchbox></zeitgeist-searchbox>
               <div class="navContainer">
                   <div hidden$="[[smallScreen]]">
                     <paper-tabs selected="{{routeData.page}}"
